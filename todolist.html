@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #4762da;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: rgb(236, 128, 227);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 5px;
+            margin: 5px 0;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #0c010f;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>To-Do List</h1>
+    <input type="text" id="taskInput" placeholder="Enter your task" required>
+    <input type="date" id="dateInput" required>
+    <button onclick="addTask()">Add Task</button>
+
+    <table id="taskTable">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Task</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Tasks will be appended here -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    let tasks = [];
+
+    function addTask() {
+        const taskInput = document.getElementById('taskInput');
+        const dateInput = document.getElementById('dateInput');
+        const task = taskInput.value;
+        const date = dateInput.value;
+
+        if (task && date) {
+            tasks.push({ task, date });
+            taskInput.value = '';
+            dateInput.value = '';
+            renderTasks();
+        }
+    }
+
+    function renderTasks() {
+        const tableBody = document.getElementById('taskTable').getElementsByTagName('tbody')[0];
+        tableBody.innerHTML = '';
+
+        tasks.forEach((taskObj, index) => {
+            const row = tableBody.insertRow();
+            row.insertCell(0).innerText = taskObj.date;
+            row.insertCell(1).innerText = taskObj.task;
+
+            const actionsCell = row.insertCell(2);
+            const updateButton = document.createElement('button');
+            updateButton.innerText = 'Update';
+            updateButton.onclick = () => updateTask(index);
+            actionsCell.appendChild(updateButton);
+
+            const deleteButton = document.createElement('button');
+            deleteButton.innerText = 'Delete';
+            deleteButton.onclick = () => deleteTask(index);
+            actionsCell.appendChild(deleteButton);
+        });
+    }
+
+    function updateTask(index) {
+        const newTask = prompt("Update your task:", tasks[index].task);
+        const newDate = prompt("Update your date:", tasks[index].date);
+        if (newTask && newDate) {
+            tasks[index] = { task: newTask, date: newDate };
+            renderTasks();
+        }
+    }
+
+    function deleteTask(index) {
+        tasks.splice(index, 1);
+        renderTasks();
+    }
+</script>
+
+</body>
+</html>
